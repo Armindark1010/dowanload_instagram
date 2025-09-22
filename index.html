@@ -1,52 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clipboard Auto POST</title>
 </head>
 <body>
-    <div>test</div>
-    svg
-    <script>
-        // یک تابع async برای گرفتن کلیپ‌بورد و ارسال ریکوئست
-async function sendClipboard() {
-  try {
-    // گرفتن متن کلیپ‌بورد
-    const clipboardText = await navigator.clipboard.readText();
-    console.log('Clipboard text:', clipboardText);
+  <h1>📋 Clipboard Auto POST</h1>
+  <pre id="result"></pre>
 
-    // ساخت هدرها (مثلاً خالی یا اضافه کن هر چی لازم داری)
-    let headersList = {
-      // مثال: 'Authorization': 'Bearer xyz'
-    };
-
-    // ساخت body
-    let bodyContent = new FormData();
-    // اضافه کردن متن کلیپ‌بورد به فیلد url یا هر فیلد دلخواه
-    bodyContent.append("url", clipboardText);
-
-    // ارسال ریکوئست POST
-    let response = await fetch("https://snapins.ai/action.php", {
-      method: "POST",
-      body: bodyContent,
-      headers: headersList
-    });
-
-    // دریافت پاسخ
-    let result = await response.text();
-    console.log('Response:', result);
-    alert('Response: ' + result);
-
-  } catch (err) {
-    console.error('Error:', err);
-    alert('Error: ' + err);
-  }
-}
-
-// اجرای تابع
-sendClipboard();
-
-    </script>
+  <script src="script.js"></script>
 </body>
 </html>
