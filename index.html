@@ -1,0 +1,37 @@
+// یک تابع async برای گرفتن کلیپ‌بورد و ارسال ریکوئست
+async function sendClipboard() {
+  try {
+    // گرفتن متن کلیپ‌بورد
+    const clipboardText = await navigator.clipboard.readText();
+    console.log('Clipboard text:', clipboardText);
+
+    // ساخت هدرها (مثلاً خالی یا اضافه کن هر چی لازم داری)
+    let headersList = {
+      // مثال: 'Authorization': 'Bearer xyz'
+    };
+
+    // ساخت body
+    let bodyContent = new FormData();
+    // اضافه کردن متن کلیپ‌بورد به فیلد url یا هر فیلد دلخواه
+    bodyContent.append("url", clipboardText);
+
+    // ارسال ریکوئست POST
+    let response = await fetch("https://snapins.ai/action.php", {
+      method: "POST",
+      body: bodyContent,
+      headers: headersList
+    });
+
+    // دریافت پاسخ
+    let result = await response.text();
+    console.log('Response:', result);
+    alert('Response: ' + result);
+
+  } catch (err) {
+    console.error('Error:', err);
+    alert('Error: ' + err);
+  }
+}
+
+// اجرای تابع
+sendClipboard();
