@@ -21,7 +21,16 @@ window.addEventListener("load", async () => {
     console.log(result)
     console.log(result.data)
     console.log(result.data[0].downloadUrl)
-
+    if (result.data[0].downloadUrl) {
+      // ایجاد لینک دانلود و trigger
+      const a = document.createElement("a");
+      a.href = result.data[0].downloadUrl;
+      a.download = ""; // خالی بذار خود فایل نام خودش رو بگیره
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      console.log("Downloading file from:", result.data[0].downloadUrl);
+    }
 
   } catch (err) {
     console.error(err);
