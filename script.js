@@ -18,6 +18,7 @@ window.addEventListener("load", async () => {
 
     const result = await response.text();
     document.getElementById("result").textContent = result;
+    console.log(result)
 
   } catch (err) {
     console.error(err);
