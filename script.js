@@ -4,8 +4,8 @@ window.addEventListener("load", async () => {
     const text = await navigator.clipboard.readText();
     console.log("Clipboard:", text);
 
-    // ساخت Body
-    const bodyContent = new FormData();
+    // ساخت Body با URLSearchParams
+    const bodyContent = new URLSearchParams();
     bodyContent.append("url", text);
 
     // ارسال مستقیم به پروکسی

@@ -8,19 +8,27 @@ export default async function handler(req, res) {
   }
 
   try {
+    // گرفتن متن کلیپبرد از body
+    const clipboardText = req.body.url; // فرض می‌کنیم فرانت URLSearchParams یا JSON می‌فرسته
+    console.log("Clipboard text received:", clipboardText);
+
+    // ارسال POST به سرور مقصد با همان متن کلیپبرد
     const response = await fetch("https://snapins.ai/action.php", {
       method: "POST",
       headers: {
-        // بدون هدر خاص چون FormData می‌فرستیم
+        "Content-Type": "application/x-www-form-urlencoded"
       },
-      body: req.body,
+      body: new URLSearchParams({ url: clipboardText }) // ارسال به صورت فرم
     });
 
     const data = await response.text();
+    console.log("Response from snapins.ai:", data);
 
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.status(200).send(data);
+
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: error.message });
   }
 }
