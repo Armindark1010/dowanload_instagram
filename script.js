@@ -16,23 +16,10 @@ window.addEventListener("load", async () => {
 
     if (!response.ok) throw new Error("API error");
 
-    const resultText = await response.text();
-    document.getElementById("result").textContent = resultText;
-    console.log(resultText);
+    const result = await response.json();
+    document.getElementById("result").textContent = result;
+    console.log(result.downloadUrl)
 
-    // فرض می‌کنیم سرور JSON برمی‌گردونه با فیلد downloadUrl
-    const result = JSON.parse(resultText);
-
-    if (result.downloadUrl) {
-      // ایجاد لینک دانلود و trigger
-      const a = document.createElement("a");
-      a.href = result.downloadUrl;
-      a.download = ""; // خالی بذار خود فایل نام خودش رو بگیره
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      console.log("Downloading file from:", result.downloadUrl);
-    }
 
   } catch (err) {
     console.error(err);
