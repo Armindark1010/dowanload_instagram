@@ -19,6 +19,8 @@ window.addEventListener("load", async () => {
     const result = await response.json();
     document.getElementById("result").textContent = result;
     console.log(result)
+    console.log(result.data)
+    console.log(result.data.downloadUrl)
 
 
   } catch (err) {
