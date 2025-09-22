@@ -20,7 +20,7 @@ window.addEventListener("load", async () => {
     document.getElementById("result").textContent = result;
     console.log(result)
     console.log(result.data)
-    console.log(result.data.downloadUrl)
+    console.log(result.data[0].downloadUrl)
 
 
   } catch (err) {
