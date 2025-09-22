@@ -21,7 +21,8 @@ export default async function handler(req, res) {
       body: new URLSearchParams({ url: clipboardText }) // ارسال به صورت فرم
     });
 
-    const data = await response.text();
+    const data = await response.json();
+    console.log(data)
     console.log("Response from snapins.ai:", data);
 
     res.setHeader("Access-Control-Allow-Origin", "*");
