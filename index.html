@@ -3,12 +3,466 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clipboard Auto POST</title>
+  <title>Instagram Media Downloader</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4efe9 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 400px;
+      background-color: white;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .container:hover {
+      transform: translateY(-5px);
+    }
+
+    .header {
+      background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcb045);
+      padding: 20px;
+      color: white;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 1.8rem;
+      margin-bottom: 5px;
+    }
+
+    .header p {
+      opacity: 0.9;
+      font-size: 0.9rem;
+    }
+
+    .input-section {
+      padding: 20px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .input-group {
+      display: flex;
+      margin-bottom: 15px;
+    }
+
+    .url-input {
+      flex: 1;
+      padding: 12px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 30px 0 0 30px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .url-input:focus {
+      border-color: #833ab4;
+    }
+
+    .fetch-btn {
+      background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcb045);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 0 30px 30px 0;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .fetch-btn:hover {
+      opacity: 0.9;
+    }
+
+    .clipboard-section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+      background-color: #f9f9f9;
+      border-radius: 10px;
+    }
+
+    .clipboard-btn {
+      background: white;
+      color: #833ab4;
+      border: 2px solid #833ab4;
+      padding: 10px 15px;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .clipboard-btn:hover {
+      background: #833ab4;
+      color: white;
+    }
+
+    .clipboard-btn i {
+      margin-right: 8px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin-right: 15px;
+      border: 3px solid #f0f0f0;
+      object-fit: cover;
+    }
+
+    .user-details h2 {
+      font-size: 1.2rem;
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    .user-details p {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .media-container {
+      position: relative;
+      width: 100%;
+      padding-top: 100%; /* 1:1 Aspect Ratio */
+      background-color: #f9f9f9;
+    }
+
+    .media {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .play-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3rem;
+      color: white;
+      background-color: rgba(0, 0, 0, 0.5);
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .media-info {
+      padding: 15px 20px;
+      color: #666;
+      font-size: 0.9rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 20px;
+      color: #666;
+    }
+
+    .loading i {
+      font-size: 2rem;
+      animation: spin 1.5s infinite linear;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .error {
+      display: none;
+      background-color: #ffebee;
+      color: #d32f2f;
+      padding: 15px;
+      text-align: center;
+      border-radius: 0 0 20px 20px;
+    }
+
+    .success {
+      display: none;
+      background-color: #e8f5e9;
+      color: #2e7d32;
+      padding: 15px;
+      text-align: center;
+      border-radius: 0 0 20px 20px;
+    }
+
+    .status-message {
+      padding: 15px 20px;
+      text-align: center;
+      color: #666;
+      font-size: 0.9rem;
+      background-color: #f9f9f9;
+      border-radius: 0 0 20px 20px;
+    }
+  </style>
 </head>
 <body>
-  <h1>📋 Clipboard Auto POST</h1>
-  <pre id="result"></pre>
+  <div class="container">
+    <div class="header">
+      <h1>Instagram Media Downloader</h1>
+      <p>Automatically download media content</p>
+    </div>
 
-  <script src="script.js"></script>
+    <div class="input-section">
+      <div class="input-group">
+        <input id="urlInput" class="url-input" type="text" placeholder="Paste Instagram URL here...">
+        <button id="fetchBtn" class="fetch-btn">Fetch</button>
+      </div>
+
+      <div class="clipboard-section">
+        <button id="clipboardBtn" class="clipboard-btn">
+          <i class="fas fa-clipboard"></i> Use Clipboard
+        </button>
+      </div>
+    </div>
+
+    <div id="userSection" class="user-info" style="display: none;">
+      <img id="userAvatar" class="avatar" src="" alt="User Avatar">
+      <div class="user-details">
+        <h2 id="userName">Loading...</h2>
+        <p id="userUsername">@username</p>
+      </div>
+    </div>
+
+    <div id="mediaSection" style="display: none;">
+      <div class="media-container">
+        <img id="mediaImage" class="media" src="" alt="Media Content">
+        <div id="playIcon" class="play-icon" style="display: none;">
+          <i class="fas fa-play"></i>
+        </div>
+      </div>
+
+      <div class="media-info">
+        <span id="mediaType">Image</span>
+        <span id="mediaId">ID: 123456</span>
+      </div>
+    </div>
+
+    <div id="loading" class="loading">
+      <i class="fas fa-spinner"></i>
+      <p>Processing your request...</p>
+    </div>
+
+    <div id="error" class="error">
+      <i class="fas fa-exclamation-circle"></i>
+      <p id="errorMsg">An error occurred</p>
+    </div>
+
+    <div id="success" class="success">
+      <i class="fas fa-check-circle"></i>
+      <p>Download started successfully!</p>
+    </div>
+
+    <div id="statusMessage" class="status-message">
+      <i class="fas fa-info-circle"></i> Enter a URL or use clipboard to start downloading
+    </div>
+  </div>
+
+  <script>
+    // DOM Elements
+    const urlInput = document.getElementById('urlInput');
+    const fetchBtn = document.getElementById('fetchBtn');
+    const clipboardBtn = document.getElementById('clipboardBtn');
+    const userSection = document.getElementById('userSection');
+    const userAvatar = document.getElementById('userAvatar');
+    const userName = document.getElementById('userName');
+    const userUsername = document.getElementById('userUsername');
+    const mediaSection = document.getElementById('mediaSection');
+    const mediaImage = document.getElementById('mediaImage');
+    const playIcon = document.getElementById('playIcon');
+    const mediaType = document.getElementById('mediaType');
+    const mediaId = document.getElementById('mediaId');
+    const loading = document.getElementById('loading');
+    const error = document.getElementById('error');
+    const errorMsg = document.getElementById('errorMsg');
+    const success = document.getElementById('success');
+    const statusMessage = document.getElementById('statusMessage');
+
+    // Hide notifications initially
+    loading.style.display = 'none';
+    error.style.display = 'none';
+    success.style.display = 'none';
+
+    // Function to process URL
+    async function processUrl(url) {
+      try {
+        // Show loading state
+        loading.style.display = 'block';
+        error.style.display = 'none';
+        success.style.display = 'none';
+        statusMessage.style.display = 'none';
+
+        // Prepare request body
+        const bodyContent = new URLSearchParams();
+        bodyContent.append("url", url);
+
+        // Send request to proxy
+        const response = await fetch("/api/proxy", {
+          method: "POST",
+          body: bodyContent,
+        });
+
+        if (!response.ok) throw new Error("API request failed");
+
+        const data = await response.json();
+        console.log("API Response:", data);
+
+        // Hide loading
+        loading.style.display = 'none';
+
+        // Check if we have valid data
+        if (!data.data || !data.data.length) {
+          throw new Error("No media data found");
+        }
+
+        // Get first media item
+        const mediaItem = data.data[0];
+
+        // Populate user info
+        userAvatar.src = mediaItem.avatar || 'https://via.placeholder.com/60';
+        userName.textContent = mediaItem.name || 'Unknown User';
+        userUsername.textContent = `@${mediaItem.username || 'unknown'}`;
+
+        // Populate media info
+        mediaImage.src = mediaItem.thumbnail || 'https://via.placeholder.com/400';
+        mediaType.textContent = mediaItem.type === 'video' ? 'Video' : 'Image';
+        mediaId.textContent = `ID: ${mediaItem.id || 'unknown'}`;
+
+        // Show play icon for videos
+        if (mediaItem.type === 'video') {
+          playIcon.style.display = 'flex';
+        } else {
+          playIcon.style.display = 'none';
+        }
+
+        // Show user and media sections
+        userSection.style.display = 'flex';
+        mediaSection.style.display = 'block';
+
+        // Auto-download the media
+        if (mediaItem.downloadUrl) {
+          const a = document.createElement('a');
+          a.href = mediaItem.downloadUrl;
+          a.download = '';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+
+          // Show success message
+          success.style.display = 'block';
+          setTimeout(() => {
+            success.style.display = 'none';
+          }, 3000);
+        } else {
+          throw new Error('Download URL not available');
+        }
+
+      } catch (err) {
+        console.error("Error:", err);
+        loading.style.display = 'none';
+        errorMsg.textContent = `Error: ${err.message}`;
+        error.style.display = 'block';
+        setTimeout(() => {
+          error.style.display = 'none';
+        }, 3000);
+      }
+    }
+
+    // Manual fetch button
+    fetchBtn.addEventListener('click', () => {
+      const url = urlInput.value.trim();
+      if (url) {
+        processUrl(url);
+      } else {
+        errorMsg.textContent = 'Please enter a valid URL';
+        error.style.display = 'block';
+        setTimeout(() => {
+          error.style.display = 'none';
+        }, 3000);
+      }
+    });
+
+    // Clipboard button
+    clipboardBtn.addEventListener('click', async () => {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          urlInput.value = text;
+          processUrl(text);
+        } else {
+          errorMsg.textContent = 'Clipboard is empty';
+          error.style.display = 'block';
+          setTimeout(() => {
+            error.style.display = 'none';
+          }, 3000);
+        }
+      } catch (err) {
+        errorMsg.textContent = 'Failed to read clipboard';
+        error.style.display = 'block';
+        setTimeout(() => {
+          error.style.display = 'none';
+        }, 3000);
+      }
+    });
+
+    // Auto-fetch from clipboard on page load
+    window.addEventListener("load", async () => {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          urlInput.value = text;
+          processUrl(text);
+        }
+      } catch (err) {
+        console.log("Could not access clipboard on page load");
+      }
+    });
+
+    // Enter key support for input field
+    urlInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        fetchBtn.click();
+      }
+    });
+  </script>
 </body>
 </html>
