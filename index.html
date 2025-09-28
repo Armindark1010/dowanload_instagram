@@ -358,9 +358,9 @@
         const mediaItem = data.data[0];
         console.log(data.data[0])
         // Populate user info
-        userAvatar.src = mediaItem.avatar || 'https://via.placeholder.com/60';
-        userName.textContent = mediaItem.name || 'Unknown User';
-        userUsername.textContent = `@${mediaItem.username || 'unknown'}`;
+        userAvatar.src = mediaItem.author.avatar || 'https://via.placeholder.com/60';
+        userName.textContent = mediaItem.author.name || 'Unknown User';
+        userUsername.textContent = `@${mediaItem.author.username || 'unknown'}`;
 
         // Populate media info
         mediaImage.src = mediaItem.thumbnail || 'https://via.placeholder.com/400';
